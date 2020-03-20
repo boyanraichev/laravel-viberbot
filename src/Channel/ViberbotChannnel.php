@@ -1,6 +1,5 @@
 <?php
-
-namespace Boyo\Viberbot;
+namespace Boyo\Viberbot\Channel;
 
 use Illuminate\Notifications\Notification;
 use Boyo\Viberbot\Clients\Client;
