@@ -1,16 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: nemanja.ivankovic
- * Date: 12/26/2018
- * Time: 2:17 PM.
- */
+namespace Boyo\Viberbot\Messages;
 
-namespace Paragraf\ViberBot\Messages;
-
-use Paragraf\ViberBot\Intefaces\MessageInterface;
-
-class WelcomeMessage extends Message implements MessageInterface
+class WelcomeMessage extends ViberMessage
 {
     // TODO: Welcome Message
 

@@ -23,7 +23,6 @@ class Bot
     
     protected $response = null;
     
-
 protected $text;
 
 protected $replays = [];
@@ -31,7 +30,6 @@ protected $replays = [];
 protected $body = [];
 
 protected $question;
-
     
     public function __construct(Request $request)
     {

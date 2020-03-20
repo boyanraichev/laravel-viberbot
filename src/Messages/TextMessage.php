@@ -1,8 +1,5 @@
 <?php
-
 namespace Boyo\Viberbot\Messages;
-
-use Boyo\Viberbot\Messages\ViberMessage;
 
 class TextMessage extends ViberMessage
 {
