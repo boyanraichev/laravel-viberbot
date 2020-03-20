@@ -63,7 +63,7 @@ class Webhook extends Command
 	            ]);
 	        }
 	        
-	        $this->info('Webhook registered for events: '.implode(', ',$response->events));
+	        $this->info('Webhook registered for events: '.implode(', ',$response->event_types));
 			
 		} catch(\Exception $e) {
 			
