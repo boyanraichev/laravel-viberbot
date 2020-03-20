@@ -6,7 +6,7 @@ use Boyo\Viberbot\Interfaces\ViberUser;
 
 class ConversationStartedEvent extends Event implements EventInterface
 {
-    public $event = 'conversation_started';
+    protected $event = 'conversation_started';
 
     public $user;
 

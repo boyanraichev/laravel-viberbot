@@ -1,11 +1,11 @@
 <?php
 namespace Paragraf\ViberBot;
 
-use Paragraf\ViberBot\Http\Http;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
+use Boyo\Viberbot\Http\ApiClient;
 use Boyo\Viberbot\Events\WebhookEvent;
 use Boyo\Viberbot\Events\ConversationStartedEvent;
 use Boyo\Viberbot\Events\SubscribedEvent;
@@ -40,7 +40,7 @@ protected $question;
         if (!empty($this->request->event)) {
 	        switch($this->request->event) {
 		        case 'webhook':
-		        	$this->event = new WebhookEvent($this->request->timestamp, $this->request->message_token, $user, $this->request->message);
+		        	$this->event = new WebhookEvent($this->request->timestamp, $this->request->message_token);
 		        	break;
 		        case 'conversation_started':
 					$this->event = new ConversationStartedEvent($this->request->timestamp, $this->request->message_token);    
@@ -60,11 +60,8 @@ protected $question;
     
     public function on($event)
     {
-        if ($this->event && $this->event->getEvent() === $event) {
-            $this->match = true;
-        } else {
-	        $this->match = false;
-        }
+        $this->match = ($this->event && $this->event->getEvent() === $event);
+        
         return $this;
     }
     
@@ -138,12 +135,12 @@ protected $question;
     {
         if ($this->proceed) {
             if (count($this->replays) === 1) {
-                Http::call('POST', 'send_message', array_merge($this->body, ['text' => $this->replays[0], 'receiver' => $this->event->getUserId()]));
+                ApiClient::call('POST', 'send_message', array_merge($this->body, ['text' => $this->replays[0], 'receiver' => $this->event->getUserId()]));
                 $this->replays = [];
                 return;
             }
             foreach ($this->replays as $replay) {
-                Http::call('POST', 'send_message', array_merge($this->body, ['text' => $replay, 'receiver' => $this->event->getUserId()]));
+                ApiClient::call('POST', 'send_message', array_merge($this->body, ['text' => $replay, 'receiver' => $this->event->getUserId()]));
             }
             $this->replays = [];
             return;

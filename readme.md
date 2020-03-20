@@ -14,9 +14,11 @@ Install through Composer.
 
 Set the following parameters in your .env file:
 
-`VIBERBOT_API=viber_token
+`
+VIBERBOT_API=viber_token
 VIBERBOT_NAME=name
-VIBERBOT_PHOTO=photo`
+VIBERBOT_PHOTO=photo
+`
 
 ## Config
 

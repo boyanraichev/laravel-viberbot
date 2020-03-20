@@ -14,14 +14,14 @@ class ApiClient
         'Content-Type' => 'application/json',
     ];
 
-    public static function call(string $method, string $url, array $body = [], bool $baseUrlActive = true)
+    public static function call(string $method, string $endpoint, array $body = [], bool $baseUrlActive = true)
     {
         
         static::$headers['X-Viber-Auth-Token'] = config('viberbot.api_key');
 
         $client = new Guzzle();
         
-        $response = $client->request($method, static::$viber_url . $url, [
+        $response = $client->request($method, static::$viber_url . $endpoint, [
 			'headers' => static::$headers,
 // 			'auth' => [$this->user,$this->key],
 			'json' => $body,
