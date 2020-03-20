@@ -39,6 +39,8 @@ class Webhook extends Command
 		    
 	        $route = $this->argument('route');
 	        
+	        $this->info('Route: '.route($route));
+	        
 	        if (empty($route) OR empty(route($route))) {
 		        
 		        throw new \Exception('Route does not exist!');
@@ -55,7 +57,10 @@ class Webhook extends Command
 	        ]);
 	        
 	        if($response->status !== 0) {
-	            throw new \Exception('Could not register webhook! Error code: '.$response->status);
+	            throw new \Exception('Could not register webhook!',[
+	            	'Error code' => $response->status,
+	            	'Error message' => $response->status_message,
+	            ]);
 	        }
 	        
 	        $this->info('Webhook registered for events: '.implode(', ',$response->events));

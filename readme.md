@@ -2,7 +2,7 @@
 
 The purpose of this package is to allow the use of the Viber Bot option for transactional communication with your customers, unlike other packages that are geared for advertising broadcast or answering support questions. 
 
-This package is a fork of *paragraf-lex/viber-bot*.
+This package is based on *paragraf-lex/viber-bot*.
 
 # Installation
 

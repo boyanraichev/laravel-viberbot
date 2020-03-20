@@ -1,5 +1,5 @@
 <?php
-namespace Paragraf\ViberBot;
+namespace Boyo\Viberbot\Clients;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;

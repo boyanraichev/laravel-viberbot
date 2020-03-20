@@ -1,11 +1,10 @@
 <?php
 
-namespace Paragraf\ViberBot;
+namespace Boyo\Viberbot\Messages;
 
-use Paragraf\ViberBot\Messages\Message;
-use Paragraf\ViberBot\Intefaces\MessageInterface;
+use Boyo\Viberbot\Messages\ViberMessage;
 
-class TextMessage extends Message implements MessageInterface
+class TextMessage extends ViberMessage
 {
     protected $text;
 
