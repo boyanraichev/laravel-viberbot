@@ -14,7 +14,7 @@ class ApiClient
         'Content-Type' => 'application/json',
     ];
 
-    public static function call(string $method, string $endpoint, array $body = [], bool $baseUrlActive = true)
+    public static function call(string $method, string $endpoint, array $body = [])
     {
         
         static::$headers['X-Viber-Auth-Token'] = config('viberbot.api_key');
@@ -24,7 +24,7 @@ class ApiClient
         $response = $client->request($method, static::$viber_url . $endpoint, [
 			'headers' => static::$headers,
 // 			'auth' => [$this->user,$this->key],
-			'json' => $body,
+			'body' => empty($body) ? '{}' : json_encode($body),
 		]);
 		
 		$status = $response->getStatusCode(); 

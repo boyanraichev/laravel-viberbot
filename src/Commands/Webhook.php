@@ -57,10 +57,7 @@ class Webhook extends Command
 	        ]);
 	        
 	        if($response->status !== 0) {
-	            throw new \Exception('Could not register webhook!',[
-	            	'Error code' => $response->status,
-	            	'Error message' => $response->status_message,
-	            ]);
+	            throw new \Exception('Could not register webhook! Error code: '. $response->status .' Error message: ' . $response->status_message);
 	        }
 	        
 	        $this->info('Webhook registered for events: '.implode(', ',$response->event_types));

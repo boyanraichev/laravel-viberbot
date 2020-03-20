@@ -40,7 +40,7 @@ class Account extends Command
 	        $response = ApiClient::call('POST', 'get_account_info', []);
 	        
 	        if($response->status !== 0) {
-	            throw new \Exception('Could not get account info! Error code: '.$response->status);
+	            throw new \Exception('Could not get account info! Error code: '. $response->status .' Error message: ' . $response->status_message);
 	        }
 	        
 	        $this->info('Account info:');
