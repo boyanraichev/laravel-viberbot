@@ -7,7 +7,7 @@ use Boyo\Viberbot\Exceptions\ViberBotException;
 abstract class ViberMessage
 {
 	
-	public $type = null;
+	protected $type = null;
 	
 	public $min_api_version = '1';
 	

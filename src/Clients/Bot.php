@@ -122,7 +122,9 @@ class Bot
     */
 	public function response(array $response) 
 	{
-		$this->response = $response;
+		if ($this->match) { 
+			$this->response = (new $response($data))->toBody();
+		}
 		
 		return $this;	
 	}
@@ -184,10 +186,10 @@ class Bot
     /*
     * sets an answer if heard something
     */    
-    public function answers(ViberMessage $message)
+    public function answers($message, $data = null)
     {
         if ($this->heard && !$this->answered) { 
-        	$this->replies[] = $message;
+        	$this->replies[] = new $message($data);
         	$this->answered = true;
         }
         
@@ -197,10 +199,10 @@ class Bot
     /*
 	 * sets an answer if no match was found 
 	 */
-	public function defaultReply(ViberMessage $message)
+	public function defaultReply($message, $data = null)
 	{
 		if ($this->match && !$this->answered) { 
-        	$this->replies[] = $message;
+        	$this->replies[] = new $message($data);
         	$this->answered = true;
         }
         
@@ -210,10 +212,10 @@ class Bot
     /*
     * adds a reply to be send
     */        
-    public function reply(ViberMessage $message)
+    public function reply($message)
     {
         if ($this->match) { 
-        	$this->replies[] = $message;
+        	$this->replies[] = new $message($data);
         }
         
         return $this;
