@@ -48,7 +48,7 @@ class Bot
         if (!empty($this->request->event)) {
 	        
 	        if ($this->log) {
-		        Log::channel('viberbot')->info('Event received.',$this->request);
+		        Log::channel('viberbot')->info('Event received.',array $this->request->all());
 	        }
 	        
 	        switch($this->request->event) {
@@ -111,7 +111,7 @@ class Bot
     public function do($callback)
     {
 	    if ($this->match) { 
-		    $callback(func_get_args());
+		    $callback($this->event);
 		}
         
         return $this;   
@@ -238,6 +238,15 @@ class Bot
 	 
 		return response()->json(true, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
 				   
+    }
+    
+    /*
+	 * Returns the event
+	 */
+    public function getEventObject() {
+	    
+	    return $this->event;
+	    
     }
     
 }

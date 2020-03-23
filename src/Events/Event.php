@@ -29,4 +29,15 @@ class Event
     {
         return $this->message_token;
     }
+    
+    public function toArray()
+    {
+	    $array = get_object_vars($this);
+	    
+	    $array['event'] = $this->event;
+	    $array['timestamp'] = $this->timestamp;
+	    $array['message_token'] = $this->message_token;
+	    
+	    return $array;
+    }
 }
