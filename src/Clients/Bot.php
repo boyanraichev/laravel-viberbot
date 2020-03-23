@@ -120,10 +120,10 @@ class Bot
 	/*
     * sets a response by the hook, needed in "conversation_started" events
     */
-	public function response(array $response) 
+	public function response($message) 
 	{
 		if ($this->match) { 
-			$this->response = (new $response($data))->toBody();
+			$this->response = (new $message($data))->toBody();
 		}
 		
 		return $this;	
