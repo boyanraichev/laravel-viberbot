@@ -70,7 +70,7 @@ abstract class ViberMessage
     public function getBody() {
 		
 		 $this->body = [
-		    'min_api_version' => $this->min_api_version;
+		    'min_api_version' => $this->min_api_version,
 			'sender' => [
 				'name' => config('viberbot.name'),
 				'avatar' => config('viberbot.photo'),
