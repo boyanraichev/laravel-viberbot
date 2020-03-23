@@ -14,7 +14,7 @@ class UnsubscribedEvent extends Event implements EventInterface
     {
         parent::__construct($request->timestamp, $request->message_token);
 
-        $this->user_id = $user_id;
+        $this->user_id = $request->user_id;
     }
 
     public function getUserId()

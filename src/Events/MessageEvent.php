@@ -9,7 +9,7 @@ class MessageEvent extends Event implements EventInterface
 {
     protected $event = 'message';
 
-    public $user;
+    public $sender;
 
     public $message;
 
@@ -18,13 +18,13 @@ class MessageEvent extends Event implements EventInterface
     {
         parent::__construct($request->timestamp, $request->message_token);
 
-        $this->user = $user;
-        $this->message = $message;
+        $this->sender = $request->sender;
+        $this->message = $request->message;
     }
 
     public function getUserId()
     {
-        return $this->user->viber_id;
+        return $this->sender->id;
     }
     
 }

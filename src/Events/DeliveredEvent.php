@@ -13,7 +13,8 @@ class DeliveredEvent extends Event implements EventInterface
     public function __construct(Request $request)
     {
         parent::__construct($request->timestamp, $request->message_token);
-        $this->user_id = $user_id;
+        
+        $this->user_id = $request->user_id;
     }
 
     public function getUserId()

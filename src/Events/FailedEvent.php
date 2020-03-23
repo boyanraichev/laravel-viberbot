@@ -16,8 +16,8 @@ class FailedEvent extends Event implements EventInterface
     {
         parent::__construct($request->timestamp, $request->message_token);
 
-        $this->user_id = $user_id;
-        $this->description = $description;
+        $this->user_id = $request->user_id;
+        $this->description = $request->desc;
     }
 
     public function getUserId()

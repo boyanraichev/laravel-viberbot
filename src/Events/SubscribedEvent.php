@@ -15,11 +15,11 @@ class SubscribedEvent extends Event implements EventInterface
     {
         parent::__construct($request->timestamp, $request->message_token);
 
-        $this->user = $user;
+        $this->user = $request->user;
     }
 
     public function getUserId()
     {
-        return $this->user->viber_id;
+        return $this->user['id'];
     }
 }

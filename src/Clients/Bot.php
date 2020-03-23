@@ -48,7 +48,7 @@ class Bot
         if (!empty($this->request->event)) {
 	        
 	        if ($this->log) {
-		        Log::channel('viberbot')->info('Event received.',array $this->request->all());
+		        Log::channel('viberbot')->info('Event received.',$this->request->all());
 	        }
 	        
 	        switch($this->request->event) {
@@ -193,6 +193,19 @@ class Bot
         
         return $this;
     }
+    
+    /*
+	 * sets an answer if no match was found 
+	 */
+	public function defaultReply(ViberMessage $message)
+	{
+		if ($this->match && !$this->answered) { 
+        	$this->replies[] = $message;
+        	$this->answered = true;
+        }
+        
+        return $this;
+	}
 
     /*
     * adds a reply to be send

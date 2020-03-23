@@ -40,15 +40,15 @@ class ConversationStartedEvent extends Event implements EventInterface
     {
         parent::__construct($request->timestamp, $request->message_token);
 
-        $this->user = $user;
-        $this->type = $type;
-        $this->context = $context;
-        $this->subscribed = $subscribed;
+        $this->user = $request->user;
+        $this->type = $request->type;
+        $this->context = $request->context;
+        $this->subscribed = $request->subscribed;
     }
 
     public function getUserId()
     {
-        return $this->user->id;
+        return $this->user['id'];
     }
     
     
