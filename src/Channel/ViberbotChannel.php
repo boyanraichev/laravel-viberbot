@@ -34,7 +34,7 @@ class ViberbotChannel
 	        throw new \Exception('No message provided');
 	    }
 	    
-	    $message->buildData();
+	    $message->setBody();
 	    
         $this->client->send($message, $notifiable);
         

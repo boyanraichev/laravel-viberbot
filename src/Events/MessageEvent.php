@@ -3,19 +3,20 @@ namespace Boyo\Viberbot\Events;
 
 use Boyo\Viberbot\Interfaces\EventInterface;
 use Boyo\Viberbot\Interfaces\ViberUser;
+use Illuminate\Http\Request;
 
 class MessageEvent extends Event implements EventInterface
 {
-    public $event = 'message';
+    protected $event = 'message';
 
     public $user;
 
     public $message;
 
     // TODO: Assign right Message object and check is it working
-    public function __construct($timestamp, $message_token, ViberUser $user, $message)
+    public function __construct(Request $request)
     {
-        parent::__construct($timestamp, $message_token);
+        parent::__construct($request->timestamp, $request->message_token);
 
         $this->user = $user;
         $this->message = $message;
@@ -25,4 +26,5 @@ class MessageEvent extends Event implements EventInterface
     {
         return $this->user->viber_id;
     }
+    
 }

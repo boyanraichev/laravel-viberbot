@@ -3,6 +3,7 @@ namespace Boyo\Viberbot\Events;
 
 use Boyo\Viberbot\Interfaces\EventInterface;
 use Boyo\Viberbot\Interfaces\ViberUser;
+use Illuminate\Http\Request;
 
 class ConversationStartedEvent extends Event implements EventInterface
 {
@@ -16,9 +17,28 @@ class ConversationStartedEvent extends Event implements EventInterface
 
     public $subscribed;
 
-    public function __construct($timestamp, $message_token, ViberUser $user, $type, $context, $subscribed)
+	/*
+	{
+	   "event":"conversation_started",
+	   "timestamp":1457764197627,
+	   "message_token":4912661846655238145,
+	   "type":"open",
+	   "context":"context information",
+	   "user":{
+	      "id":"01234567890A=",
+	      "name":"John McClane",
+	      "avatar":"http://avatar.example.com",
+	      "country":"UK",
+	      "language":"en",
+	      "api_version":1
+	   },
+	   "subscribed":false
+	}
+	*/
+
+    public function __construct(Request $request)
     {
-        parent::__construct($timestamp, $message_token);
+        parent::__construct($request->timestamp, $request->message_token);
 
         $this->user = $user;
         $this->type = $type;
@@ -28,7 +48,8 @@ class ConversationStartedEvent extends Event implements EventInterface
 
     public function getUserId()
     {
-        return $this->user->viber_id;
+        return $this->user->id;
     }
+    
     
 }

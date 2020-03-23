@@ -3,16 +3,17 @@ namespace Boyo\Viberbot\Events;
 
 use Boyo\Viberbot\Interfaces\EventInterface;
 use Boyo\Viberbot\Interfaces\ViberUser;
+use Illuminate\Http\Request;
 
 class SubscribedEvent extends Event implements EventInterface
 {
-    public $event = 'subscribed';
+    protected $event = 'subscribed';
 
     public $user;
 
-    public function __construct($timestamp, $message_token, ViberUser $user)
+    public function __construct(Request $request)
     {
-        parent::__construct($timestamp, $message_token);
+        parent::__construct($request->timestamp, $request->message_token);
 
         $this->user = $user;
     }

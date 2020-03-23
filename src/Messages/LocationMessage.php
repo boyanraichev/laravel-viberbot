@@ -3,44 +3,31 @@ namespace Boyo\Viberbot\Messages;
 
 class LocationMessage extends ViberMessage
 {
-    protected $lat;
-
-    protected $lng;
 
     protected $type = 'location';
+    
+    public $lat;
 
-    // TODO: Check does contact paramter works well
-    public function body()
+    public $lon;
+
+	public function __construct(string $lat, string $lon) 
     {
-        return array_merge(parent::body(), [
-            'location' => [
-                'lat' => '',
-                'lon' => '',
-            ],
-        ]);
+	    $this->lat = $lat;
+	    $this->lon = $lon; 
     }
-
-    public function getLat()
+    
+    public function getBody()
     {
-        return $this->lat;
+	    
+	    parent::getBody();
+	    
+	    $this->body['location'] = [
+            'lat' => $this->lat,
+            'lon' => $this->lon,
+        ];
+	     
+	    return $this->body; 
+
     }
-
-    public function setLat($lat)
-    {
-        $this->lat = $lat;
-
-        return $this;
-    }
-
-    public function getLng()
-    {
-        return $this->lng;
-    }
-
-    public function setLng($lng)
-    {
-        $this->lng = $lng;
-
-        return $this;
-    }
+    
 }

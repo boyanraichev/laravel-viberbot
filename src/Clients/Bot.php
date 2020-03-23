@@ -4,6 +4,7 @@ namespace Boyo\Viberbot\Clients;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 use Boyo\Viberbot\Http\ApiClient;
 use Boyo\Viberbot\Events\WebhookEvent;
@@ -14,48 +15,74 @@ use Boyo\Viberbot\Events\MessageEvent;
 
 class Bot
 {
-
+	// loggin
+	protected $log;
+	
+	// incoming request
     protected $request;
     
+    // the event received
     protected $event = false;
     
+    // event matched in on()
     protected $match = false;
     
-    protected $response = null;
+    // text matched in hears()
+    protected $heard = false;
     
-protected $text;
-
-protected $replays = [];
-
-protected $body = [];
-
-protected $question;
+    // heard has been answered
+    protected $answered = false;    
+    	        
+	// message replies to send
+	protected $replies = [];     
+        
+    // response to hook -> if left empty will respond true and status 200
+	protected $response = null;
     
     public function __construct(Request $request)
     {
         $this->request = $request;
         
+        $this->log = config('viberbot.log');
+        
         if (!empty($this->request->event)) {
+	        
+	        if ($this->log) {
+		        Log::channel('viberbot')->info('Event received.',$this->request);
+	        }
+	        
 	        switch($this->request->event) {
 		        case 'webhook':
-		        	$this->event = new WebhookEvent($this->request->timestamp, $this->request->message_token);
+		        	$this->event = new WebhookEvent($this->request);
 		        	break;
 		        case 'conversation_started':
-					$this->event = new ConversationStartedEvent($this->request->timestamp, $this->request->message_token);    
+					$this->event = new ConversationStartedEvent($this->request);    
 		        	break;
 		        case 'subscribed':
-		        	$this->event = new SubscribedEvent($this->request->timestamp, $this->request->message_token, $user);
+		        	$this->event = new SubscribedEvent($this->request);
 		        	break;
 		        case 'unsubscribed':
-		        	$this->event = new UnsubscribedEvent($this->request->timestamp, $this->request->message_token, $user);
+		        	$this->event = new UnsubscribedEvent($this->request);
 		        	break;
 		        case 'message':
-		        	$this->event = new MessageEvent($this->request->timestamp, $this->request->message_token, $user, $this->request->message);
+		        	$this->event = new MessageEvent($this->request);
+		        	break;   
+		        case 'failed':
+		        	$this->event = new FailedEvent($this->request);
+		        	break;   
+		        case 'delivered':
+		        	$this->event = new DeliveredEvent($this->request);
+		        	break;   
+		        case 'seen':
+		        	$this->event = new SeenEvent($this->request);
 		        	break;   	
 	        }
         }
     }
     
+    /*
+    * matches with event received
+    */
     public function on($event)
     {
         $this->match = ($this->event && $this->event->getEvent() === $event);
@@ -63,91 +90,154 @@ protected $question;
         return $this;
     }
     
+	/*
+    * additional condition for match in event data received
+    */
+    public function condition(string $property, $value)
+    {
+	    if ($this->match) {
+		    
+		    $event = $this->event->getEvent();
+        	$this->match = ( isset($event->$property) && $event->$property == $value );
+        	
+        }
+        
+        return $this;
+    }
+    
+    /*
+    * fires a callback for additional actions to be performed in the app upon event received
+    */
     public function do($callback)
     {
 	    if ($this->match) { 
 		    $callback(func_get_args());
 		}
-        return $this;
+        
+        return $this;   
 	}
 	
-	public function keyboard() 
+	/*
+    * sets a response by the hook, needed in "conversation_started" events
+    */
+	public function response(array $response) 
 	{
-		if ($this->match) { 
-			
-		}
-		return $this;
+		$this->response = $response;
+		
+		return $this;	
 	}
 	    
-    public function hears($text)
+    /*
+    * matches incoming text for specific words
+    * 
+    * $words can be a string (single word/phrase) or an array (multiple words/phrases). 
+    * $match_all weather all strings in the $words array should be matched or any
+    */    
+    public function hears($words,$match_all=false)
     {
-        if (is_array($text)) {
-            foreach ($text as $txt) {
-                if ($this->request->message['text'] === $txt) {
-                    return $this->hears($txt);
-                }
-            }
-            $this->proceed = false;
-        }
-        
-        if (is_string($text)) {
-            /*
-             * This represent regex.
-             */
-            if (startWith('/', $text) && endWith('/', $text)) {
-                if (preg_match($text, $this->request->message['text'])) {
-                    return $this;
-                }
-            }
-            if ($this->request->message['text'] === $text) {
-                $this->text = $text;
-                return $this;
-            }
-            $this->proceed = false;
-//          throw Exception;
-        }
+	    if ($this->match && !$this->heard) { 
+			    
+	        if (is_array($words) && count($words)>0) {
+		        if ($match_all) {
+			        $this->heard = true;
+		            foreach ($words as $text) {
+			            if (!$this->matchText($text)) {
+				            $this->heard = false;
+			            }
+		            }		        
+		        } else {
+			        $this->heard = false;
+		            foreach ($words as $text) {
+			            if ($this->matchText($text)) {
+				            $this->heard = true;
+			            }
+		            }
+		        }
+	        }
+	        
+	        if (is_string($words)) {
+	           $this->heard = $this->matchText($words);
+	        }
+			
+		}
+		
         return $this;
     }
     
-    public function reply($answer, $method = null)
-    {
-        if (is_array($answer)) {
-            $this->replays = $answer;
-            return $this;
-        }
-        if (is_string($answer)) {
-            $this->replays[] = $answer;
-            return $this;
-        }
-        if (is_a($answer, Collection::class)) {
-            foreach ($answer as $item) {
-                if (is_subclass_of($item, Model::class)) {
-                    eval('$this->replays[] = $item->'.$method.';');
-                }
-            }
-            return $this;
-        }
+    /*
+    * matches a string in the text, checks for regex
+    */    
+    public function matchText($text) {
+	    
+	    if (substr($text,0,1)==='/') {
+		    
+		    return ( preg_match($text, $this->event['message']['text']) === 1 );
+		    
+	    } else {
+		    
+		    return $text === $this->event['message']['text'];
+		    
+	    }
+	    
     }
     
+    /*
+    * sets an answer if heard something
+    */    
+    public function answers(ViberMessage $message)
+    {
+        if ($this->heard && !$this->answered) { 
+        	$this->replies[] = $message;
+        	$this->answered = true;
+        }
+        
+        return $this;
+    }
+
+    /*
+    * adds a reply to be send
+    */        
+    public function reply(ViberMessage $message)
+    {
+        if ($this->match) { 
+        	$this->replies[] = $message;
+        }
+        
+        return $this;
+    }
+
+    /*
+    * sends all replies
+    */        
     public function send()
     {
-        if ($this->proceed) {
-            if (count($this->replays) === 1) {
-                ApiClient::call('POST', 'send_message', array_merge($this->body, ['text' => $this->replays[0], 'receiver' => $this->event->getUserId()]));
-                $this->replays = [];
-                return;
-            }
-            foreach ($this->replays as $replay) {
-                ApiClient::call('POST', 'send_message', array_merge($this->body, ['text' => $replay, 'receiver' => $this->event->getUserId()]));
-            }
-            $this->replays = [];
-            return;
+
+        foreach ($this->replies as $reply) {
+	        
+	        // set user? from event data?
+	        
+	        // set body?
+	        
+            ApiClient::call('POST', 'send_message', $reply->getBody());
         }
-//        throw Exception
+        
+        $this->replies = [];
+        
+        return $this;
+
     }
     
-    public function response() {
+    /*
+    * returns the response by the hook
+    */        
+    public function respond() {
 	    
+	    if ($this->response) {
+		    return response()->json($this->response, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
+	    }
+	 
+		return response()->json(true, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
+				   
     }
     
 }

@@ -7,4 +7,6 @@ interface ViberUser {
 	
 	public function setViberIdAttribute($value);
 	
+// 	public function getViberSubscribedAttribute();
+	
 }

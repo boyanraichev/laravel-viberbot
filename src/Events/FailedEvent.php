@@ -2,18 +2,19 @@
 namespace Boyo\Viberbot\Events;
 
 use Boyo\Viberbot\Interfaces\EventInterface;
+use Illuminate\Http\Request;
 
 class FailedEvent extends Event implements EventInterface
 {
-    public $event = 'failed';
+    protected $event = 'failed';
 
     public $user_id;
 
     public $description;
 
-    public function __construct($timestamp, $message_token, $user_id, $description)
+    public function __construct(Request $request)
     {
-        parent::__construct($timestamp, $message_token);
+        parent::__construct($request->timestamp, $request->message_token);
 
         $this->user_id = $user_id;
         $this->description = $description;

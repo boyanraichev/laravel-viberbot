@@ -3,55 +3,42 @@ namespace Boyo\Viberbot\Messages;
 
 class PictureMessage extends ViberMessage
 {
-    protected $text;
-
-    protected $media;
+	
+	/*
+	{  
+	   "type":"picture",
+	   "text":"Photo description",
+	   "media":"http://www.images.com/img.jpg",
+	   "thumbnail":"http://www.images.com/thumb.jpg"
+	}
+	*/
 
     protected $type = 'picture';
+    	
+    public $text;
 
-    protected $thumbnail;
+    public $media;
 
-    public function body()
+    public $thumbnail;
+
+	public function __construct(string $text, string $media, string $thumbnail) 
     {
-        return array_merge(parent::body(), [
-            'media' => $this->media,
-            'thumbnail' => $this->thumbnail,
-        ]);
+	    $this->text = $text;
+	    $this->media = $media;
+   	    $this->thumbnail = $thumbnail; 	    
     }
-
-    public function getText()
+    
+    public function getBody()
     {
-        return $this->text;
+	    
+	    parent::getBody();
+	    
+	    $this->body['text'] = $this->text;
+	    $this->body['media'] = $this->media;
+	    $this->body['thumbnail'] = $this->thumbnail;
+	     
+	    return $this->body; 
+
     }
-
-    public function setText($text)
-    {
-        $this->text = $text;
-
-        return $this;
-    }
-
-    public function getMedia()
-    {
-        return $this->media;
-    }
-
-    public function setMedia($media)
-    {
-        $this->media = $media;
-
-        return $this;
-    }
-
-    public function getThumbnail()
-    {
-        return $this->thumbnail;
-    }
-
-    public function setThumbnail($thumbnail)
-    {
-        $this->thumbnail = $thumbnail;
-
-        return $this;
-    }
+    
 }

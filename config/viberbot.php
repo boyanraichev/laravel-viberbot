@@ -17,4 +17,6 @@ return [
         'conversation_started',
     ],
     
+    'log' => env('VIBERBOT_LOG',false),
+    
 ];

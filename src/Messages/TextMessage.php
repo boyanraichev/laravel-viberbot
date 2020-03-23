@@ -3,26 +3,25 @@ namespace Boyo\Viberbot\Messages;
 
 class TextMessage extends ViberMessage
 {
-    protected $text;
-
+		
     protected $type = 'text';
-
-    public function body()
+    
+    public $text = '';
+    
+    public function __construct(string $text) 
     {
-        return array_merge(parent::body(), [
-            'text' => $this->text,
-        ]);
+	    $this->text = $text;
     }
 
-    public function getText()
+    public function getBody()
     {
-        return $this->text;
+	    
+	    parent::getBody();
+	    
+	    $this->body['text'] = $this->text;
+	     
+	    return $this->body; 
+
     }
 
-    public function setText($text)
-    {
-        $this->text = $text;
-
-        return $this;
-    }
 }

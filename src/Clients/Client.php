@@ -11,14 +11,15 @@ class Client
     public function send(ViberMessage $message, ViberUser $user)
     {
 	    
-        $data = $message->getData();
-        
-	    $response = ApiClient::call('POST', 'send_message', $data );
+	    $message->receiver($user);
 	    
+        $body = $message->getBody();
+        
+	    $response = ApiClient::call('POST', 'send_message', $body );
 	    
     }
     
-    public function broadcast(ViberMessage $message) 
+    public function broadcast(ViberMessage $message, array $users) 
     {
 	    
 	    
