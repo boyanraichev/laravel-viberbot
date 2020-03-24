@@ -177,11 +177,11 @@ class Bot
 	    
 	    if (substr($text,0,1)==='/') {
 		    
-		    return ( preg_match($text, $this->event['message']['text']) === 1 );
+		    return ( preg_match($text, $this->event->message['text']) === 1 );
 		    
 	    } else {
 		    
-		    return $text === $this->event['message']['text'];
+		    return $text === $this->event->message['text'];
 		    
 	    }
 	    
