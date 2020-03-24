@@ -24,7 +24,7 @@ class MessageEvent extends Event implements EventInterface
 
     public function getUserId()
     {
-        return $this->sender->id;
+        return $this->sender['id'];
     }
     
 }

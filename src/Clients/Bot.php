@@ -12,6 +12,7 @@ use Boyo\Viberbot\Events\ConversationStartedEvent;
 use Boyo\Viberbot\Events\SubscribedEvent;
 use Boyo\Viberbot\Events\UnsubscribedEvent;
 use Boyo\Viberbot\Events\SeenEvent;
+use Boyo\Viberbot\Events\DeliveredEvent;
 use Boyo\Viberbot\Events\MessageEvent;
 
 class Bot
