@@ -46,21 +46,6 @@ class ApiClient
             return $client->response;
         }
         
-        if ($method === 'GET') {
-            $client->get(($baseUrlActive ? static::$BASE_URL : '').$url, $body);
-            if ($client->error) {
-                return json_encode('Error: '.$client->errorCode.': '.$client->errorMessage."\n");
-            }
-            return $client->response;
-        }
-        
-        if ($method === 'PUT') {
-            $client->put(($baseUrlActive ? static::$BASE_URL : '').$url, json_encode($body));
-        }
-        
-        if ($method === 'PATCH') {
-            $client->patch(($baseUrlActive ? static::$BASE_URL : '').$url, json_encode($body));
-        }
 */
     
     }

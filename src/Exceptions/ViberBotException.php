@@ -33,4 +33,24 @@ class ViberBotException extends \Exception
     {
 	    return new static('Missing a required parameter: message body.');
     }    
+    
+	/**
+     * Thrown when there is no valid message object passed to Client
+     *
+     * @return static
+     */
+    public static function noMessageProvided()
+    {
+	    return new static('No message provided');
+    }   
+    
+	/**
+     * Thrown when there is no valid ViberUser object passed to Client
+     *
+     * @return static
+     */
+    public static function noReceiverProvided()
+    {
+	    return new static('No receiver provided');
+    }
 }

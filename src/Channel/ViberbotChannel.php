@@ -4,6 +4,8 @@ namespace Boyo\Viberbot\Channel;
 use Illuminate\Notifications\Notification;
 use Boyo\Viberbot\Clients\Client;
 use Boyo\Viberbot\Messages\ViberMessage;
+use Boyo\Viberbot\Interfaces\ViberUser;
+use Boyo\Viberbot\Exceptions\ViberBotException;
 
 class ViberbotChannel
 {
@@ -23,7 +25,7 @@ class ViberbotChannel
      *
      * @param  mixed  $notifiable
      * @param  \Illuminate\Notifications\Notification  $notification
-     * @return void
+     * @return API response
      */
     public function send($notifiable, Notification $notification)
     {
@@ -31,10 +33,12 @@ class ViberbotChannel
         $message = $notification->toViberbot($notifiable);
         
         if (!$message instanceof ViberMessage) {
-	        throw new \Exception('No message provided');
+	        throw ViberBotException::noMessageProvided();
 	    }
 	    
-	    $message->setBody();
+	    if (!$notifiable instanceof ViberUser) {
+	    	throw ViberBotException::noReceiverProvided();
+	    }
 	    
         $this->client->send($message, $notifiable);
         

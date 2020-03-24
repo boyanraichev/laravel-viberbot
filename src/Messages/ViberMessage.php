@@ -15,10 +15,17 @@ abstract class ViberMessage
 	
 	public $receiver = null;
 	
+	public $broadcast_list = null;
+	
 	public $keyboard = null;
 	
 	public $body = [];
 	
+	/**
+     * Get the message type
+     *
+     * @return string $type
+     */  
     public function getMessageType() {
 		
 		if (empty($this->type)) {
@@ -29,6 +36,12 @@ abstract class ViberMessage
 
 	}
 
+	/**
+     * Set the message receiver
+     *
+     * @param ViberUser $user
+     * @return obj $this
+     */
     public function receiver(ViberUser $user) {
 	    
 		$viber_id = $user->getViberIdAttribute();
@@ -42,7 +55,39 @@ abstract class ViberMessage
 		return $this;
 		
     } 
-     
+
+	/**
+     * Set the message multiple receivers
+     *
+     * @param collection of ViberUser $users
+     * @return obj $this
+     */    
+    public function broadcast(array $users) {
+	    
+	    $broadcast_list = [];
+	    
+	    foreach($users as $user) {
+		    
+		    if (!$user instanceof ViberUser) {
+		    	throw ViberBotException::noReceiverProvided();
+		    }
+		    
+		    $broadcast_list[] = $user->getViberIdAttribute();
+			
+	    }
+	    
+	    $this->broadcast_list = $broadcast_list;
+	    
+	    return $this;
+	    
+	}
+	
+	/**
+     * Set the message tracking data
+     *
+     * @param string $tracking_data
+     * @return obj $this
+     */       
     public function trackingData($tracking_data) {
 	    
 	    $this->tracking_data = $tracking_data;
@@ -50,7 +95,13 @@ abstract class ViberMessage
 	    return $this;
 	    
 	}
-
+	
+	/**
+     * Set the message min_api_version
+     *
+     * @param string $min_api_version
+     * @return obj $this
+     */ 
     public function minApiVersion($min_api_version) {
 	    
 	    $this->min_api_version = $min_api_version;
@@ -59,6 +110,12 @@ abstract class ViberMessage
 	    
 	}
 
+	/**
+     * Attach keyboard to message
+     *
+     * @param array $keyboard 
+     * @return obj $this
+     */
     public function keyboard(array $keyboard) {
 	    
 	    $this->keyboard = $keyboard;
@@ -66,7 +123,12 @@ abstract class ViberMessage
 	    return $this;
 	    
 	}
-	
+
+	/**
+     * Get the message body
+     *
+     * @return array $body
+     */	
     public function getBody() {
 		
 		 $this->body = [
@@ -83,6 +145,11 @@ abstract class ViberMessage
 	    if (!empty($this->receiver)) {
 		    $this->body['receiver'] = $this->receiver;
 	    } 
+	    
+	    // broadcast
+	    if (!empty($this->broadcast_list)) {
+		    $this->body['broadcast_list'] = $this->broadcast_list;
+	    }
 	    
 	    // keyboard
 	    if (!empty($this->keyboard)) {

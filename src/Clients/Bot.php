@@ -141,8 +141,10 @@ class Bot
     */    
     public function hears($words,$match_all=false)
     {
-	    if ($this->match && !$this->heard) { 
-			    
+	    $this->heard = false;
+	    
+	    if ($this->match && !$this->answered) { 
+			   
 	        if (is_array($words) && count($words)>0) {
 		        if ($match_all) {
 			        $this->heard = true;
@@ -162,7 +164,7 @@ class Bot
 	        }
 	        
 	        if (is_string($words)) {
-	           $this->heard = $this->matchText($words);
+	        	$this->heard = $this->matchText($words);
 	        }
 			
 		}
@@ -192,7 +194,7 @@ class Bot
     */    
     public function answers($message, $data = null)
     {
-        if ($this->heard && !$this->answered) { 
+        if ($this->heard) { 
         	$this->replies[] = new $message($data);
         	$this->answered = true;
         }
@@ -263,11 +265,8 @@ class Bot
 
         foreach ($this->replies as $reply) {
 	        
-	        // set user? from event data?
-	        
-	        // set body?
-	        
             ApiClient::call('POST', 'send_message', $reply->getBody());
+        
         }
         
         $this->replies = [];
@@ -282,7 +281,9 @@ class Bot
     public function respond() {
 	    
 	    if ($this->response) {
+		    
 		    return response()->json($this->response, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
+	    
 	    }
 	 
 		return response()->json(true, 200, ['Content-Type' => 'application/json; charset=UTF-8'], JSON_UNESCAPED_UNICODE);
