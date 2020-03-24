@@ -216,7 +216,7 @@ class Bot
     /*
     * adds a reply to be send
     */        
-    public function reply($message)
+    public function reply($message, $data = null)
     {
         if ($this->match) { 
         	$this->replies[] = new $message($data);
