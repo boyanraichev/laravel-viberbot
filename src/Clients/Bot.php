@@ -11,6 +11,7 @@ use Boyo\Viberbot\Events\WebhookEvent;
 use Boyo\Viberbot\Events\ConversationStartedEvent;
 use Boyo\Viberbot\Events\SubscribedEvent;
 use Boyo\Viberbot\Events\UnsubscribedEvent;
+use Boyo\Viberbot\Events\SeenEvent;
 use Boyo\Viberbot\Events\MessageEvent;
 
 class Bot
@@ -31,7 +32,10 @@ class Bot
     protected $heard = false;
     
     // heard has been answered
-    protected $answered = false;    
+    protected $answered = false;   
+    
+    // ifelse chaining
+    protected $ifelse = null;        
     	        
 	// message replies to send
 	protected $replies = [];     
@@ -87,6 +91,8 @@ class Bot
     {
         $this->match = ($this->event && $this->event->getEvent() === $event);
         
+        $this->ifelse = null;
+        
         return $this;
     }
     
@@ -96,10 +102,7 @@ class Bot
     public function condition(string $property, $value)
     {
 	    if ($this->match) {
-		    
-		    $event = $this->event->getEvent();
-        	$this->match = ( isset($event->$property) && $event->$property == $value );
-        	
+        	$this->match = ( isset($this->event->$property) && $this->event->$property == $value );
         }
         
         return $this;
@@ -123,7 +126,7 @@ class Bot
 	public function response($message, $data = null) 
 	{
 		if ($this->match) { 
-			$this->response = (new $message($data))->toBody();
+			$this->response = (new $message($data))->getBody();
 		}
 		
 		return $this;	
@@ -221,6 +224,36 @@ class Bot
         return $this;
     }
 
+	/*
+    * if else conditioning 
+    */        
+    public function if($statement)
+    {
+		if ($this->match) { 
+			
+			$this->ifelse = true;
+			
+			$this->match = (bool) $statement;
+			
+		}
+        
+        return $this;
+	}
+	
+	/*
+    * if else conditioning 
+    */        
+    public function else()
+    {
+		if ($this->ifelse) { 
+
+			$this->match = !$this->match;
+			
+		}
+        
+        return $this;
+	}
+	
     /*
     * sends all replies
     */        
