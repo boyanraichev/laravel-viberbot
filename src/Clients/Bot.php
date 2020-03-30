@@ -53,7 +53,7 @@ class Bot
         if (!empty($this->request->event)) {
 	        
 	        if ($this->log) {
-		        Log::channel('viberbot')->info('Event received.',$this->request->all());
+		        Log::channel('viberbot_hook')->info('Event received.',$this->request->all());
 	        }
 	        
 	        switch($this->request->event) {
