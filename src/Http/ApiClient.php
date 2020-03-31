@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Log;
 class ApiClient
 {
 	
-	private $log = false;
+	private static $log = false;
 
-	private $send = true;
+	private static $send = true;
 		
     public static $viber_url = 'https://chatapi.viber.com/pa/';
 
@@ -23,19 +23,19 @@ class ApiClient
     public static function call(string $method, string $endpoint, array $body = [])
     {
         
-        self::$log = config('viberbot.log');
+        static::$log = config('viberbot.log');
         
-        self::$send = config('viberbot.send');
+        static::$send = config('viberbot.send');
         
-        if (self::$log) {
+        if (static::$log) {
 			Log::channel('viberbot')->info('Viberbot message',[
 		        'endpoint' => static::$viber_url . $endpoint,
 		        'body' => empty($body) ? '{}' : json_encode($body),
-		        'send' => self::$send,
+		        'send' => static::$send,
 			]);
         }
         
-        if (self::$send) {
+        if (static::$send) {
 	        
 	        static::$headers['X-Viber-Auth-Token'] = config('viberbot.api_key');
 	
@@ -49,7 +49,7 @@ class ApiClient
 			
 			$status = $response->getStatusCode(); 
 			
-			if (self::$log) {
+			if (static::$log) {
 				Log::channel('viberbot')->info('Viberbot message response',[
 					'status' => $status,
 				]);
