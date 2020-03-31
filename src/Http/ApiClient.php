@@ -23,19 +23,19 @@ class ApiClient
     public static function call(string $method, string $endpoint, array $body = [])
     {
         
-        $this->log = config('viberbot.log');
+        self::$log = config('viberbot.log');
         
-        $this->send = config('viberbot.send');
+        self::$send = config('viberbot.send');
         
-        if ($this->log) {
+        if (self::$log) {
 			Log::channel('viberbot')->info('Viberbot message',[
 		        'endpoint' => static::$viber_url . $endpoint,
 		        'body' => empty($body) ? '{}' : json_encode($body),
-		        'send' => $this->send,
+		        'send' => self::$send,
 			]);
         }
         
-        if ($this->send) {
+        if (self::$send) {
 	        
 	        static::$headers['X-Viber-Auth-Token'] = config('viberbot.api_key');
 	
@@ -49,7 +49,7 @@ class ApiClient
 			
 			$status = $response->getStatusCode(); 
 			
-			if ($this->log) {
+			if (self::$log) {
 				Log::channel('viberbot')->info('Viberbot message response',[
 					'status' => $status,
 				]);
