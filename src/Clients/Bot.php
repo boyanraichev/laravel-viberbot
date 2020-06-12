@@ -177,6 +177,12 @@ class Bot
     */    
     public function matchText($text) {
 	    
+	    if (!isset($this->event->message['text'])) {
+		    
+		    return false;
+	    
+	    }
+	    
 	    if (substr($text,0,1)==='/') {
 		    
 		    return ( preg_match($text, $this->event->message['text']) === 1 );
