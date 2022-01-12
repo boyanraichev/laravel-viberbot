@@ -35,12 +35,18 @@ class ViberbotChannel
         if (!$message instanceof ViberMessage) {
 	        throw ViberBotException::noMessageProvided();
 	    }
+        
+        if (!$message->receiver) {
+            
+            if (!$notifiable instanceof ViberUser) {
+    	    	throw ViberBotException::noReceiverProvided();
+            } else {
+                $message->receiver($notifiable);
+            }
+            
+        }
 	    
-	    if (!$notifiable instanceof ViberUser) {
-	    	throw ViberBotException::noReceiverProvided();
-	    }
-	    
-        $this->client->send($message, $notifiable);
+        $this->client->send($message);
         
     }
     

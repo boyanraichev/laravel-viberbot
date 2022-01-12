@@ -18,9 +18,13 @@ class Client
     public function send(ViberMessage $message, ?ViberUser $user = null)
     {
 	    
-	    if ($user) {
+	    if (!$message->receiver) {
 	    
-	    	$message->receiver($user);
+            if ($user) {
+    	    	$message->receiver($user);
+            } else {
+                throw ViberBotException::noReceiverProvided();
+            }
 	    
 	    }
         
