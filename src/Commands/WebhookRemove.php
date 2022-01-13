@@ -2,7 +2,9 @@
 namespace Boyo\Viberbot\Commands;
 
 use Illuminate\Console\Command;
+
 use Boyo\Viberbot\Http\ApiClient;
+use Boyo\Viberbot\Exceptions\ViberBotException;
 
 class WebhookRemove extends Command
 {
@@ -45,6 +47,10 @@ class WebhookRemove extends Command
 			
 		} catch(\Exception $e) {
 			
+            if (!$e instanceof ViberBotException) {
+                Log::debug($e);
+            }
+            
 			$this->error($e->getMessage());
 			
 		}

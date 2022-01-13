@@ -2,7 +2,10 @@
 namespace Boyo\Viberbot\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+
 use Boyo\Viberbot\Http\ApiClient;
+use Boyo\Viberbot\Exceptions\ViberBotException;
 
 class Account extends Command
 {
@@ -40,15 +43,19 @@ class Account extends Command
 	        $response = ApiClient::call('POST', 'get_account_info', []);
 	        
 	        if($response->status !== 0) {
-	            throw new \Exception('Could not get account info! Error code: '. $response->status .' Error message: ' . $response->status_message);
+	            throw new ViberBotException("Could not get account info! Error code: {$response->status} Error message: {$response->status_message}");
 	        }
 	        
 	        $this->info('Account info:');
 	        
 	        var_dump($response);
-			
+		
 		} catch(\Exception $e) {
 			
+            if (!$e instanceof ViberBotException) {
+                Log::debug($e);
+            }
+            
 			$this->error($e->getMessage());
 			
 		}
