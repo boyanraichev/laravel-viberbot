@@ -30,7 +30,7 @@ class ApiClient
         if (static::$log) {
 			Log::channel('viberbot')->info('Viberbot message',[
 		        'endpoint' => static::$viber_url . $endpoint,
-		        'body' => empty($body) ? '{}' : json_encode($body),
+		        'body' => empty($body) ? '{}' : json_encode($body, JSON_UNESCAPED_UNICODE),
 		        'send' => static::$send,
 			]);
         }
